@@ -1,0 +1,31 @@
+services:
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8025:8025" # Веб-интерфейс: http://localhost:8025
+      - "1025:1025" # SMTP порт
+    networks:
+      - saas_network
+
+  notification-service:
+    build: . # Укажите ".", если compose.yml лежит в папке notification-service
+    container_name: notification-service
+    ports:
+      - "8009:8009"
+    environment:
+      MAIL_USER: user
+      MAIL_PASSWORD: fad4dc282ad31788eb8a77cc764a294c
+      MAIL_SERVER: mailhog
+      MAIL_PORT: 1025
+      MAIL_FROM: "noreply@saas.local"
+      KAFKA_BOOTSTRAP_SERVERS: kafka_broker:9092
+    depends_on:
+      - mailhog
+    networks:
+      - saas_network
+    restart: unless-stopped
+
+networks:
+  saas_network:
+    external: true
