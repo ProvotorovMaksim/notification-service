@@ -7,7 +7,7 @@ logger.setLevel("INFO")
 
 def main():
     try:
-        start_consuming()
+        run(start_consuming())
     except KeyboardInterrupt:
         logger.info("Service stopped")
     except Exception as e:
